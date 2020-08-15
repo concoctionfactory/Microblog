@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "react-redux";
 import {
   Button,
   ListGroup,
@@ -8,10 +9,10 @@ import {
   FormGroup,
   Input,
 } from "reactstrap";
+import { addComment, removeComment } from "./actions";
 
-function Comments({ postId, comments, addComment, removeComment }) {
-  console.log(comments);
-
+function Comments({ postId, comments }) {
+  const dispatch = useDispatch();
   const INITIAL_FORM_STATE = "";
   const [commentForm, setCommentForm] = useState([INITIAL_FORM_STATE]);
 
@@ -21,17 +22,22 @@ function Comments({ postId, comments, addComment, removeComment }) {
   };
 
   const handleAddComment = () => {
-    addComment(postId, { id: uuidv4, text: commentForm });
+    dispatch(addComment(postId, uuidv4(), commentForm));
     setCommentForm("");
   };
 
+  const handleRemoveComment = (id) => {
+    dispatch(removeComment(postId, id));
+  };
+
+  console.log(comments);
   const commentList = () => {
     return (
       <ListGroup>
-        {comments.map((c) => (
-          <ListGroupItem key={c.id}>
-            <p>{c.text}</p>
-            <Button onClick={() => removeComment(postId, c.id)}>X</Button>
+        {Object.entries(comments).map(([key, value]) => (
+          <ListGroupItem key={key}>
+            <p>{value.text}</p>
+            <Button onClick={() => handleRemoveComment(key)}>X</Button>
           </ListGroupItem>
         ))}
       </ListGroup>

@@ -1,6 +1,8 @@
 import React from "react";
 import { useParams, useHistory } from "react-router-dom";
 import Comments from "./Comments";
+import { useSelector, useDispatch } from "react-redux";
+import { removePost } from "./actions";
 
 import {
   Card,
@@ -11,18 +13,21 @@ import {
   Button,
 } from "reactstrap";
 
-function PostView({ posts, removePost, addComment, removeComment }) {
+function PostView() {
+  const posts = useSelector((state) => state);
+  const dispatch = useDispatch();
+
   const history = useHistory();
   const id = useParams().id;
-  const post = posts.filter((p) => p.id === id)[0];
+  const post = posts[id];
 
   const handleRemove = () => {
-    removePost(post.id);
+    dispatch(removePost(id));
     history.push("/");
   };
 
   const handleEdit = () => {
-    history.push(`/${post.id}/edit`);
+    history.push(`/${id}/edit`);
   };
 
   return (
@@ -41,12 +46,7 @@ function PostView({ posts, removePost, addComment, removeComment }) {
         </CardBody>
       </Card>
       <hr className="m-2" />
-      <Comments
-        postId={id}
-        comments={post.comments}
-        addComment={addComment}
-        removeComment={removeComment}
-      ></Comments>
+      <Comments postId={id} comments={post.comments}></Comments>
     </div>
   );
 }

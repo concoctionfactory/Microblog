@@ -2,22 +2,24 @@ import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory, useParams } from "react-router-dom";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { updatePost, addPost } from "./actions";
 
-function PostForm({ addPost, posts = [], isEdit = false }) {
+function PostForm({ isEdit = false }) {
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state);
   const history = useHistory();
   const id = useParams().id;
 
   let INITIAL_STATE = {
-    id: "",
     title: "",
     description: "",
     body: "",
   };
 
   if (isEdit) {
-    const post = posts.filter((p) => p.id === id)[0] || [];
+    const post = posts[id];
     INITIAL_STATE = {
-      id: post.id,
       title: post.title,
       description: post.description,
       body: post.body,
@@ -36,7 +38,9 @@ function PostForm({ addPost, posts = [], isEdit = false }) {
 
   const handleSave = (e) => {
     e.preventDefault();
-    isEdit ? addPost(form) : addPost({ ...form, id: uuidv4() });
+    console.log(form);
+    let action = isEdit ? updatePost(id, form) : addPost(uuidv4(), form);
+    dispatch(action);
     history.push("/");
   };
 
