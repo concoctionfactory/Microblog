@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import Comments from "./Comments";
 import { useSelector, useDispatch } from "react-redux";
-import { removePost } from "./actions";
+import { getPostAPI, removePostAPI, getCommentsAPI } from "./actions";
 
 import {
   Card,
@@ -14,15 +14,20 @@ import {
 } from "reactstrap";
 
 function PostView() {
-  const posts = useSelector((state) => state);
+  const posts = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
   const history = useHistory();
   const id = useParams().id;
-  const post = posts[id];
+  const post = posts[id] || [];
+
+  useEffect(() => {
+    dispatch(getPostAPI());
+    dispatch(getCommentsAPI(id));
+  }, [dispatch, id]);
 
   const handleRemove = () => {
-    dispatch(removePost(id));
+    dispatch(removePostAPI(id));
     history.push("/");
   };
 

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useHistory, useParams } from "react-router-dom";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { updatePost, addPost } from "./actions";
+import { addPostAPI, updatePostAPI } from "./actions";
 
 function PostForm({ isEdit = false }) {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state);
+  const posts = useSelector((state) => state.posts);
   const history = useHistory();
   const id = useParams().id;
 
@@ -29,7 +28,7 @@ function PostForm({ isEdit = false }) {
 
   useEffect(() => {
     setForm(INITIAL_STATE);
-  }, [isEdit]);
+  }, [isEdit, INITIAL_STATE]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +38,8 @@ function PostForm({ isEdit = false }) {
   const handleSave = (e) => {
     e.preventDefault();
     console.log(form);
-    let action = isEdit ? updatePost(id, form) : addPost(uuidv4(), form);
+
+    let action = isEdit ? updatePostAPI(id, form) : addPostAPI(form);
     dispatch(action);
     history.push("/");
   };

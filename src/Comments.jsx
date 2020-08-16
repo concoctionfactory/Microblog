@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -9,7 +8,7 @@ import {
   FormGroup,
   Input,
 } from "reactstrap";
-import { addComment, removeComment } from "./actions";
+import { addCommentAPI, removeCommentAPI } from "./actions";
 
 function Comments({ postId, comments }) {
   const dispatch = useDispatch();
@@ -22,12 +21,12 @@ function Comments({ postId, comments }) {
   };
 
   const handleAddComment = () => {
-    dispatch(addComment(postId, uuidv4(), commentForm));
+    dispatch(addCommentAPI(postId, { text: commentForm }));
     setCommentForm("");
   };
 
   const handleRemoveComment = (id) => {
-    dispatch(removeComment(postId, id));
+    dispatch(removeCommentAPI(postId, id));
   };
 
   console.log(comments);
